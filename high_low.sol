@@ -2,7 +2,7 @@ pragma solidity ^0.5.11;
 
 contract HighLow {
     address payable[] player_addrs;   // dynamic array with player addresses
-    address public house;             // contract owner
+    address payable public house;             // contract owner
     uint[52] cards;
     uint curr_card_index;
     uint SHUFFLE_LIMIT = 40;
@@ -148,6 +148,21 @@ contract HighLow {
         }
     }
 
+    function high_low_reset() public {
+        require (player_addrs.length > 0);
+        for (uint i = 0; i < player_addrs.length; ++i) {
+            Player memory p = players[player_addrs[i]];
+            player_addrs[i].transfer(p.bet_amount);
+        }
+        announce_new_card();
+
+        // reset the players
+        for (uint i = 0; i < player_addrs.length; ++i)
+            delete players[player_addrs[i]];
+
+        player_addrs = new address payable[](0);
+    }
+
     // function result() public only_house {
     function result() public {
         require (player_addrs.length > 0);
@@ -157,8 +172,10 @@ contract HighLow {
             Player memory p = players[player_addrs[i]];
             if (next_card_num < announced_card.num && p.choice == Choice.Low)
                 player_addrs[i].transfer(2*p.bet_amount);   // pay the twice the player's bet amount
-            if (next_card_num > announced_card.num && p.choice == Choice.High)
+            else if (next_card_num > announced_card.num && p.choice == Choice.High)
                 player_addrs[i].transfer(2*p.bet_amount);
+            else
+                house.transfer(p.bet_amount);
         }
         announce_new_card();
 
