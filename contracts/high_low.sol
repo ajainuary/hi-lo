@@ -1,4 +1,4 @@
-pragma solidity ^0.5.11;
+pragma solidity ^0.5.8;
 
 contract HighLow {
     address payable[] player_addrs;   // dynamic array with player addresses
