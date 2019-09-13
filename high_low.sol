@@ -77,7 +77,6 @@ contract HighLow {
         require (msg.sender == house);
         _;
     }
-
     // payable function, ether are sent to the contract when calling this functions
     function bet_on_high () payable public{
         require(msg.value >= 0.01 ether);
@@ -126,13 +125,11 @@ contract HighLow {
         //return uint256(keccak256(abi.encodePacked(block.difficulty, block.timestamp, player_addrs.length)));
         return uint256(keccak256(abi.encodePacked(now)));
     }
-
     // function get_player_choice(uint i) public view only_house returns (Choice) {
     function get_player_choice(uint i) public view returns (Choice) {
         require (i >= 0 && i < player_addrs.length);
         return players[player_addrs[i]].choice;
     }
-    
     // function get_player_bet_amount(uint i) public view only_house returns (uint) {
     function get_player_bet_amount(uint i) public view returns (uint) {
         require (i >= 0 && i < player_addrs.length);
@@ -172,11 +169,10 @@ contract HighLow {
             Player memory p = players[player_addrs[i]];
             if (next_card_num < announced_card.num && p.choice == Choice.Low)
                 player_addrs[i].transfer(2*p.bet_amount);   // pay the twice the player's bet amount
-            else if (next_card_num > announced_card.num && p.choice == Choice.High)
+            if (next_card_num > announced_card.num && p.choice == Choice.High)
                 player_addrs[i].transfer(2*p.bet_amount);
-            else
-                house.transfer(p.bet_amount);
         }
+        house.transfer(house_balance());
         announce_new_card();
 
         // reset the players
