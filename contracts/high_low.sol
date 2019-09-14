@@ -24,7 +24,7 @@ contract HighLow {
     function new_card() internal {
         if(block.number > start_block + wait_blocks) {
             curr_card_index = curr_card_index+1;
-            cards[curr_card_index] = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            cards[curr_card_index%SHUFFLE_LIMIT] = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         }
     }
 
@@ -32,12 +32,12 @@ contract HighLow {
     
     function bet_commit(bytes32 _commit) payable public {
         require(msg.value >= 0.01 ether);
-        if(block.number > start_block + wait_blocks) {
-            new_card();
-        }
         players[msg.sender].bet_amount = (uint)(msg.value);
         players[msg.sender].idx = curr_card_index;
         players[msg.sender].commitment = _commit;
+        if(block.number > start_block + wait_blocks) {
+            new_card();
+        }
     }
 
     function bet_reveal(uint8 choice, uint256 nonce) public {
