@@ -16,4 +16,8 @@ contract TestHighLow {
         Assert.isAtLeast(new_card, 0, "New card is lower than zero");
         Assert.isBelow(new_card, high_low.MAX_CARDS(), "New card is higher than max cards");
     }
+
+    function helpCommitment(uint8 choice, uint256 nonce) public returns (bytes32) {
+        return keccak256(abi.encodePacked(choice, nonce));
+    }
 }
