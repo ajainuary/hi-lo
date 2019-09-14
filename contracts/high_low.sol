@@ -2,8 +2,9 @@ pragma solidity ^0.5.8;
 
 contract HighLow {
     address payable public house;             // contract owner
-    uint constant SHUFFLE_LIMIT = 4;
-    uint constant MAX_CARDS = 13; //could be any lucky number
+    uint constant SHUFFLE_LIMIT = 40;
+    uint constant MAX_CARDS = 52; //could be any lucky number
+    uint constant SUITE_SIZE = 13; //Small Lucky number (should divide MAX_CARDS)
     uint[SHUFFLE_LIMIT] public cards;
     uint curr_card_index;
     uint constant wait_blocks = 1;
@@ -21,10 +22,23 @@ contract HighLow {
         new_card();
     }
 
+    function already_announced(uint rand) internal view returns(bool) {
+        for(uint i = 0; i < SHUFFLE_LIMIT; ++i) {
+            if(rand == cards[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function new_card() internal {
         if(block.number > start_block + wait_blocks) {
             curr_card_index = curr_card_index+1;
-            cards[curr_card_index%SHUFFLE_LIMIT] = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            while(already_announced(rand)) {
+                rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            }
+            cards[curr_card_index%SHUFFLE_LIMIT] = rand;
         }
     }
 
@@ -46,8 +60,8 @@ contract HighLow {
             new_card();
         }
         bytes32 test_hash = keccak256(abi.encodePacked(choice, nonce));
-        uint bet_card = cards[players[msg.sender].idx];
-        uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)];
+        uint bet_card = cards[players[msg.sender].idx] % SUITE_SIZE;
+        uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)] % SUITE_SIZE;
         if(test_hash == players[msg.sender].commitment) {
             if (result_card == bet_card)
                 house.transfer(players[msg.sender].bet_amount);
