@@ -3,7 +3,7 @@ pragma solidity ^0.5.8;
 contract HighLow {
     address payable public house;             // contract owner
     uint constant SHUFFLE_LIMIT = 4;
-    uint constant MAX_CARDS = 1000000007; //could be any lucky number
+    uint constant MAX_CARDS = 13; //could be any lucky number
     uint[SHUFFLE_LIMIT] public cards;
     uint curr_card_index;
     uint constant wait_blocks = 1;
@@ -18,15 +18,13 @@ contract HighLow {
     constructor() public {
         house = msg.sender;
         start_block = block.number;
-        for (uint i = 0; i < cards.length; ++i)
-            cards[i] = i;
         new_card();
     }
 
     function new_card() internal {
         if(block.number > start_block + wait_blocks) {
-        curr_card_index = curr_card_index+1;
-        cards[curr_card_index] = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            curr_card_index = curr_card_index+1;
+            cards[curr_card_index] = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         }
     }
 
@@ -54,7 +52,7 @@ contract HighLow {
             if (result_card == bet_card)
                 house.transfer(players[msg.sender].bet_amount);
             else if (result_card < bet_card && choice == 0)
-                msg.sender.transfer(2*players[msg.sender].bet_amount);   // pay the twice the player's bet amount
+                msg.sender.transfer(2*players[msg.sender].bet_amount);
             else if (result_card > bet_card && choice == 1)
                 msg.sender.transfer(2*players[msg.sender].bet_amount);
         }
