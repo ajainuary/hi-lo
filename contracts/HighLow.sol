@@ -2,12 +2,12 @@ pragma solidity ^0.5.8;
 
 contract HighLow {
     address payable public house;             // contract owner
-    uint constant SHUFFLE_LIMIT = 40;
-    uint constant MAX_CARDS = 52; //could be any lucky number
-    uint constant SUITE_SIZE = 13; //Small Lucky number (should divide MAX_CARDS)
+    uint public constant SHUFFLE_LIMIT = 40;
+    uint public constant MAX_CARDS = 52; //could be any lucky number
+    uint public constant SUITE_SIZE = 13; //Small Lucky number (should divide MAX_CARDS)
     uint[SHUFFLE_LIMIT] public cards;
-    uint curr_card_index;
-    uint constant wait_blocks = 1;
+    uint public curr_card_index;
+    uint public constant wait_blocks = 1;
     uint public start_block;
 
     struct Player {
