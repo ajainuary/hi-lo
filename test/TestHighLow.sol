@@ -1,7 +1,7 @@
 pragma solidity ^0.5.8;
 
 import "truffle/Assert.sol";
-import "../contracts/high_low.sol";
+import "../contracts/HighLow.sol";
 
 contract TestHighLow {
     function testSettingAnOwnerDuringCreation() public {
