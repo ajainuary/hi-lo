@@ -18,7 +18,6 @@ contract HighLow {
 
     constructor() public {
         house = msg.sender;
-        start_block = block.number;
         new_card();
     }
 
@@ -32,14 +31,13 @@ contract HighLow {
     }
 
     function new_card() internal {
-        if(block.number > start_block + wait_blocks) {
-            curr_card_index = curr_card_index+1;
-            uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
-            while(already_announced(rand)) {
-                rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
-            }
-            cards[curr_card_index%SHUFFLE_LIMIT] = rand;
+        start_block = block.number;
+        curr_card_index = curr_card_index+1;
+        uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+        while(already_announced(rand)) {
+            rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         }
+        cards[curr_card_index%SHUFFLE_LIMIT] = rand;
     }
 
     mapping (address => Player) players;
@@ -49,7 +47,7 @@ contract HighLow {
         players[msg.sender].bet_amount = (uint)(msg.value);
         players[msg.sender].idx = curr_card_index;
         players[msg.sender].commitment = _commit;
-        if(block.number > start_block + wait_blocks) {
+        if(block.number >= start_block + wait_blocks) {
             new_card();
         }
     }
