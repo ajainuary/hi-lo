@@ -54,7 +54,7 @@ contract HighLow {
 
     function bet_reveal(uint8 choice, uint256 nonce) public {
         require(curr_card_index - players[msg.sender].idx > 0 && curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT);
-        if(block.number > start_block + wait_blocks) {
+        if(block.number >= start_block + wait_blocks) {
             new_card();
         }
         bytes32 test_hash = keccak256(abi.encodePacked(choice, nonce));
