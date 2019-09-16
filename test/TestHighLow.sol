@@ -11,9 +11,7 @@ contract TestHighLow {
 
     function testNewCard() public {
         HighLow high_low = new HighLow();
-        uint index = high_low.curr_card_index();
-        uint new_card = high_low.cards(index);
-        Assert.isAtLeast(new_card, 0, "New card is lower than zero");
-        Assert.isBelow(new_card, high_low.MAX_CARDS(), "New card is higher than max cards");
+        Assert.isAtLeast(high_low.announced_card(), 1, "Announced card is too low");
+        Assert.isBelow(high_low.announced_card(), 11, "Announced card is too high");
     }
 }

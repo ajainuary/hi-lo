@@ -2,13 +2,14 @@ pragma solidity ^0.5.8;
 
 contract HighLow {
     address payable public house;             // contract owner
-    uint public constant SHUFFLE_LIMIT = 40;
+    uint public constant SHUFFLE_LIMIT = 30;
     uint public constant MAX_CARDS = 52; //could be any lucky number
     uint public constant SUITE_SIZE = 13; //Small Lucky number (should divide MAX_CARDS)
     uint[SHUFFLE_LIMIT] public cards;
     uint public curr_card_index;
     uint public constant wait_blocks = 1;
     uint public start_block;
+    uint public announced_card;
 
     struct Player {
         uint bet_amount;
@@ -32,16 +33,17 @@ contract HighLow {
 
     function new_card() internal {
         start_block = block.number;
-        curr_card_index = curr_card_index+1;
         uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
-        while(already_announced(rand)) {
+        while(already_announced(rand) || announced_card < 2 || announced_card > 10) {
             rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+            announced_card = rand % SUITE_SIZE;
         }
-        cards[curr_card_index%SHUFFLE_LIMIT] = rand;
+        curr_card_index = curr_card_index + 1;
+        cards[curr_card_index % SHUFFLE_LIMIT] = rand;
     }
 
-    mapping (address => Player) players;
-    
+    mapping (address => Player) public players;
+
     function bet_commit(bytes32 _commit) payable public {
         require(msg.value >= 0.01 ether);
         players[msg.sender].bet_amount = (uint)(msg.value);
