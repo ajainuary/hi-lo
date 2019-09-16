@@ -44,12 +44,19 @@ describe ('HighLow', () => {
         assert(announced_card > 1, "Announced card is too low");
         assert(announced_card < 11, "Announced card is too high");
     });
+    // TODO: check new_card() using inheritance
     it('checks that the announced card is not present in the burnt deck', async() => {
-        // announced_card = await highlow.methods.announced_card().call();
-        // cards = await highlow.methods.cards().call();
-
-        assert(shuffle_limit == 30, "Yayy!!");
-        // assert(announced_card > 1, "Announced card is too low");
-        // assert(announced_card < 11, "Announced card is too high");
+        curr_card_index = await highlow.methods.curr_card_index().call();
+        announced_card = await highlow.methods.cards(curr_card_index).call();
+        already_burnt = false;
+        for (i = 1; i < curr_card_index;) {
+            burnt_card = await highlow.methods.cards(i).call();
+            if (burnt_card == announced_card) {
+                already_burnt = true;
+                break;
+            }
+            i = (i + 1) % shuffle_limit;
+        }
+        assert(already_burnt == false, "Announced card exists in burnt deck!!");
     });
 });
