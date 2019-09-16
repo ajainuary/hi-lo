@@ -23,8 +23,8 @@ contract HighLow {
     }
 
     function deposit(uint amount) public payable {
-        require(msg.value == amount);
-        // This condition rejects typos in transaction
+        require(msg.value == amount, "Incorrect Amount, specified amount does not match transaction value");
+        // This condition rejects any typos in transaction
     }
 
     function already_announced(uint rand) internal view returns(bool) {
@@ -49,9 +49,9 @@ contract HighLow {
     }
 
     mapping (address => Player) public players;
-    
-    function bet_commit(bytes32 _commit) payable public {
-        require(msg.value >= 0.01 ether);
+    function bet_commit(bytes32 _commit) public payable {
+        require(msg.value >= 0.01 ether, "Amount too low, Min Bet 0.01 Ether");
+        require(msg.value < 10 ether, "Amount too high, Max Bet 10 Ether");
         players[msg.sender].bet_amount = (uint)(msg.value);
         players[msg.sender].idx = curr_card_index;
         players[msg.sender].commitment = _commit;
@@ -61,7 +61,9 @@ contract HighLow {
     }
 
     function bet_reveal(uint8 choice, uint256 nonce) public {
-        require(curr_card_index - players[msg.sender].idx > 0 && curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT);
+        require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
+        require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
+        require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
         if(block.number >= start_block + wait_blocks) {
             new_card();
         }
@@ -75,6 +77,7 @@ contract HighLow {
                 msg.sender.transfer(2*players[msg.sender].bet_amount);
             else if (result_card > bet_card && choice == 1)
                 msg.sender.transfer(2*players[msg.sender].bet_amount);
+            players[msg.sender].bet_amount = 0;
         }
     }
 }
