@@ -22,6 +22,11 @@ contract HighLow {
         new_card();
     }
 
+    function deposit(uint amount) public payable {
+        require(msg.value == amount);
+        // This condition rejects typos in transaction
+    }
+
     function already_announced(uint rand) internal view returns(bool) {
         for(uint i = 0; i < SHUFFLE_LIMIT; ++i) {
             if(rand == cards[i]) {
@@ -34,6 +39,7 @@ contract HighLow {
     function new_card() internal {
         start_block = block.number;
         uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+        announced_card = rand % SUITE_SIZE;
         while(already_announced(rand) || announced_card < 2 || announced_card > 10) {
             rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
             announced_card = rand % SUITE_SIZE;
@@ -43,7 +49,7 @@ contract HighLow {
     }
 
     mapping (address => Player) public players;
-
+    
     function bet_commit(bytes32 _commit) payable public {
         require(msg.value >= 0.01 ether);
         players[msg.sender].bet_amount = (uint)(msg.value);
