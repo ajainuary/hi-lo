@@ -3,8 +3,8 @@ pragma solidity ^0.5.8;
 contract HighLow {
     address payable public house;             // contract owner
     uint public constant SHUFFLE_LIMIT = 30;
-    uint public constant MAX_CARDS = 52; //could be any lucky number
-    uint public constant SUITE_SIZE = 13; //Small Lucky number (should divide MAX_CARDS)
+    uint public constant MAX_CARDS = 52;      // could be any lucky number
+    uint public constant SUITE_SIZE = 13;     // Small Lucky number (should divide MAX_CARDS)
     uint[SHUFFLE_LIMIT] public cards;
     uint public curr_card_index;
     uint public constant wait_blocks = 1;
