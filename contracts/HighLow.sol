@@ -11,9 +11,9 @@ contract HighLow {
     uint[SHUFFLE_LIMIT] public cards;
     bool[MAX_CARDS] public burn;
     uint public curr_card_index;
-    /// @dev Determines the duration of the round (Duration = wait_blocks * average block time)
-    uint public constant wait_blocks = 1;
-    uint public start_block;
+    /// @dev Determines the duration of a single round
+    uint public constant WAIT_TIME = now;
+    uint public START_TIME;
     uint public announced_card;
 
     struct Player {
@@ -28,9 +28,9 @@ contract HighLow {
     }
 
     /// @notice Deposit ether into the contract
-    /// @param amount Value of ether being deposited (in wei)
-    function deposit(uint amount) public payable {
-        require(msg.value == amount, "Incorrect Amount, specified amount does not match transaction value");
+    /// @param _amount Value of ether being deposited (in wei)
+    function deposit(uint _amount) public payable {
+        require(msg.value == _amount, "Incorrect Amount, specified amount does not match transaction value");
         // This condition rejects any typos in transaction
     }
 
@@ -41,7 +41,7 @@ contract HighLow {
                 burn[i] = false;
             }
         }
-        start_block = block.number;
+        START_TIME = now;
         uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         announced_card = rand % SUITE_SIZE;
         while(burn[rand] || announced_card < 2 || announced_card > 10) {
@@ -64,7 +64,7 @@ contract HighLow {
         players[msg.sender].bet_amount = (uint)(msg.value);
         players[msg.sender].idx = curr_card_index;
         players[msg.sender].commitment = _commit;
-        if(block.number >= start_block + wait_blocks) {
+        if(now >= START_TIME + WAIT_TIME) {
             new_card();
         }
     }
@@ -76,7 +76,7 @@ contract HighLow {
         require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
         require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
         require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
-        if(block.number >= start_block + wait_blocks) {
+        if(now >= START_TIME + WAIT_TIME) {
             new_card();
         }
         bytes32 test_hash = keccak256(abi.encodePacked(_choice, _nonce));
