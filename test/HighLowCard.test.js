@@ -9,15 +9,14 @@ ROUND_DURATION = 15;
 
 isAnnouncedCardBurnt = async () => {
     curr_card_index = await highlow.curr_card_index.call();
-    announced_card = await highlow.cards.call(curr_card_index);
+    announced_card = await highlow.cards.call(curr_card_index%shuffle_limit);
     already_burnt = false;
-    for (i = 1; i < curr_card_index;) {
+    for (i = (curr_card_index+2) % shuffle_limit; i < curr_card_index % shuffle_limit; i = (i+1)%shuffle_limit) {
         burnt_card = await highlow.cards.call(i);
         if (announced_card == burnt_card) {
             already_burnt = true;
             break;
         }
-        i = (i + 1) % shuffle_limit;
     }
     return already_burnt;
 }
@@ -62,7 +61,7 @@ contract('HighLow Announces Card', () => {
             value: web3.utils.toWei("1"),
             gas: 6721975
         });
-        for (i = 0; i < 17; ++i) {
+        for (i = 0; i < 35; ++i) {
             commitment2 = await helper.generate_commitment.call(i % 2, NONCE1);
             await highlow.bet_commit(commitment2, {
                 from: player2,
@@ -70,7 +69,6 @@ contract('HighLow Announces Card', () => {
                 gas: 6721975
             });
             await finishRound();
-            console.log(i);
             await highlow.bet_reveal(i % 2, NONCE1, {
                 from: player2,
                 gas: 6721975
@@ -80,6 +78,28 @@ contract('HighLow Announces Card', () => {
             from: player1,
             gas: 6721975
         }), "Too late, bet forfeited");
-        // assert((await isAnnouncedCardBurnt()) == false, "Announced card exists in burnt deck");
+    });
+    // TODO: check new_card() using inheritance
+    it('Announced card not present in burnt deck.', async() => {
+        player1 = accounts[4];
+        patron = accounts[0];
+        await highlow.deposit(web3.utils.toWei("90"), {
+            from: patron,
+            value: web3.utils.toWei("90")
+        });
+        for (let i = 0; i < 35; ++i) {
+            commitment1 = await helper.generate_commitment.call(i % 2, NONCE1);
+            await highlow.bet_commit(commitment1, {
+                from: player1,
+                value: web3.utils.toWei("1"),
+                gas: 6721975
+            });
+            await finishRound();
+            await highlow.bet_reveal(i % 2, NONCE1, {
+                from: player1,
+                gas: 6721975
+            });
+            assert((await isAnnouncedCardBurnt()) == false, "Announced card already present in burnt deck.")
+        }
     });
 });

@@ -12,8 +12,8 @@ contract HighLow {
     bool[MAX_CARDS] public burn;
     uint public curr_card_index;
     /// @dev Determines the duration of a single round
-    uint public constant WAIT_TIME = 10;
-    uint public START_TIME;
+    uint public constant WAIT_TIME = 15;
+    uint public start_time;
     uint public announced_card;
 
     struct Player {
@@ -41,7 +41,7 @@ contract HighLow {
                 burn[i] = false;
             }
         }
-        START_TIME = now;
+        start_time = now;
         uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         announced_card = rand % SUITE_SIZE;
         while(burn[rand] || announced_card < 2 || announced_card > 10) {
@@ -64,7 +64,7 @@ contract HighLow {
         players[msg.sender].bet_amount = (uint)(msg.value);
         players[msg.sender].idx = curr_card_index;
         players[msg.sender].commitment = _commit;
-        if(now >= START_TIME + WAIT_TIME) {
+        if(now >= start_time + WAIT_TIME) {
             new_card();
         }
     }
@@ -74,7 +74,7 @@ contract HighLow {
     /// @param _choice Choice (0 for High, 1 for Low) commited earlier
     /// @param _nonce Same nonce used for commitment earlier
     function bet_reveal(uint8 _choice, uint256 _nonce) public {
-        if(now >= START_TIME + WAIT_TIME) {
+        if(now >= start_time + WAIT_TIME) {
             new_card();
         }
         require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
