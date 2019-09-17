@@ -81,7 +81,7 @@ contract HighLow {
         require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
         require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
         bytes32 test_hash = keccak256(abi.encodePacked(_choice, _nonce));
-        uint bet_card = cards[players[msg.sender].idx] % SUITE_SIZE;
+        uint bet_card = cards[players[msg.sender].idx % SHUFFLE_LIMIT] % SUITE_SIZE;
         uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)] % SUITE_SIZE;
         if(test_hash == players[msg.sender].commitment) {
             if (result_card == bet_card)

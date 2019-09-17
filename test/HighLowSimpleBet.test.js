@@ -1,15 +1,15 @@
 const HighLow = artifacts.require("HighLow");
-const Helper = artifacts.require("Helper")
+const Helper = artifacts.require("Helper");
 let accounts, highlow, helper;
 let LOW = 0, HIGH = 1;
 let NONCE1 = 1234, NONCE2 = 5678;
-const WAIT_TIME = 15;
+ROUND_DURATION = 15;
 
 finishRound = async () => {
     await web3.currentProvider.send({
         jsonrpc: '2.0',
         method: 'evm_increaseTime',
-        params: [WAIT_TIME],
+        params: [ROUND_DURATION],
         id: new Date().getTime()
     }, () => {});
     return;
@@ -45,7 +45,7 @@ contract('Single Player Game', () => {
         final_amt = await web3.eth.getBalance(accounts[1]);
         // console.log(final_amt, initial_amt, result_card, bet_card, result_card > bet_card);
         // console.log("verdict", (final_amt > initial_amt && result_card < bet_card), final_amt - initial_amt <= 0, final_amt - initial_amt, result_card >= bet_card);
-        assert((final_amt > initial_amt && result_card < bet_card) || (final_amt - initial_amt <= 0 && result_card >= bet_card), "Incorrect Verdict");
+        assert((final_amt - initial_amt > 0 && result_card < bet_card) || (final_amt - initial_amt <= 0 && result_card >= bet_card), "Incorrect Verdict");
     });
     it('Honest Player - Commits: High, Reveals: High, Nonce: Same', async () => {
         bet_card = await highlow.announced_card.call().then(x => x.toNumber());
@@ -63,7 +63,9 @@ contract('Single Player Game', () => {
         });
         result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
-        assert((final_amt > initial_amt && result_card > bet_card) || (final_amt - initial_amt <= 0 && result_card <= bet_card), "Incorrect Verdict");
+        // console.log(final_amt, initial_amt, result_card, bet_card, result_card > bet_card);
+        // console.log("verdict", (final_amt > initial_amt && result_card < bet_card), final_amt - initial_amt <= 0, final_amt - initial_amt, result_card >= bet_card);
+        assert((final_amt - initial_amt > 0 && result_card > bet_card) || (final_amt - initial_amt <= 0 && result_card <= bet_card), "Incorrect Verdict");
     });
     it('Dishonest Player - Commits: Low, Reveals: Low, Nonce: Different', async () => {
         bet_card = await highlow.announced_card.call().then(x => x.toNumber());
