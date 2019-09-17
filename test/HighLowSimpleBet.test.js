@@ -3,6 +3,17 @@ const Helper = artifacts.require("Helper")
 let accounts, highlow, helper;
 let LOW = 0, HIGH = 1;
 let NONCE1 = 1234, NONCE2 = 5678;
+WAIT_TIME = 15;
+
+finishRound = async () => {
+    await web3.currentProvider.send({
+        jsonrpc: '2.0',
+        method: 'evm_increaseTime',
+        params: [WAIT_TIME],
+        id: new Date().getTime()
+    }, () => {});
+    return;
+}
 
 contract('Single Player Game', () => {
     beforeEach(async () => {
@@ -25,11 +36,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(LOW, NONCE1, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         // console.log(final_amt, initial_amt, result_card, bet_card, result_card > bet_card);
         // console.log("verdict", (final_amt > initial_amt && result_card < bet_card), final_amt - initial_amt <= 0, final_amt - initial_amt, result_card >= bet_card);
@@ -44,11 +56,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(HIGH, NONCE1, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert((final_amt > initial_amt && result_card > bet_card) || (final_amt - initial_amt <= 0 && result_card <= bet_card), "Incorrect Verdict");
     });
@@ -61,11 +74,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(LOW, NONCE2, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
@@ -78,11 +92,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(HIGH, NONCE2, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
@@ -95,11 +110,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(HIGH, NONCE1, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
@@ -112,11 +128,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(HIGH, NONCE2, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
@@ -129,11 +146,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(LOW, NONCE1, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
@@ -146,11 +164,12 @@ contract('Single Player Game', () => {
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
-        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await finishRound();
         await highlow.bet_reveal(LOW, NONCE2, {
             from: accounts[1],
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         final_amt = await web3.eth.getBalance(accounts[1]);
         assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
