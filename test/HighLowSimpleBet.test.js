@@ -15,22 +15,22 @@ contract('Single Player Game', () => {
         });
     });
     it('Honest Player bets Low', async () => {
-        // bet_card = await highlow.announced_card.call();
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
         commitment = await helper.generate_commitment.call(0, 1234);
-        // initial_amt = await web3.eth.getBalance(accounts[1]);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
         await highlow.bet_commit(commitment, {
             from: accounts[1],
             value: web3.utils.toWei("2"),
             gas: 6721975
         });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
         await highlow.bet_reveal(0, 1234, {
             from: accounts[1],
             gas: 6721975
         });
-        // final_amt = await web3.eth.getBalance(accounts[1]);
-        // result_card = await highlow.announced_card.call();
-        // console.log(final_amt, initial_amt, result_card, bet_card);
-        // assert(final_amt > initial_amt && result_card > bet_card, "Incorrect Verdict");
-        // assert(final_amt <= initial_amt && result_card < bet_card, "Incorrect Verdict");
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        // console.log(final_amt, initial_amt, result_card, bet_card, result_card > bet_card);
+        // console.log("verdict", (final_amt > initial_amt && result_card < bet_card), final_amt - initial_amt <= 0, final_amt - initial_amt, result_card >= bet_card);
+        assert((final_amt > initial_amt && result_card < bet_card) || (final_amt - initial_amt <= 0 && result_card >= bet_card), "Incorrect Verdict");
     });
 })
