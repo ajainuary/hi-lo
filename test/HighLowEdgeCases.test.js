@@ -2,7 +2,7 @@ const HighLow = artifacts.require("HighLow");
 const Helper = artifacts.require("Helper");
 const truffleAssert = require('truffle-assertions');
 let accounts, highlow, helper;
-const WAIT_TIME = 15;
+const WAIT_TIME = 40;
 
 finishRound = async () => {
     await web3.currentProvider.send({

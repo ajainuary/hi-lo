@@ -5,7 +5,7 @@ const truffleAssert = require('truffle-assertions');
 let accounts, highlow;
 let LOW = 0, HIGH = 1;
 let NONCE1 = 1234, NONCE2 = 5678;
-ROUND_DURATION = 15;
+ROUND_DURATION = 40;
 
 isAnnouncedCardBurnt = async () => {
     curr_card_index = await highlow.curr_card_index.call();

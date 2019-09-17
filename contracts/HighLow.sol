@@ -12,7 +12,7 @@ contract HighLow {
     bool[MAX_CARDS] public burn;
     uint public curr_card_index;
     /// @dev Determines the duration of a single round
-    uint public constant WAIT_TIME = 15;
+    uint public constant WAIT_TIME = 30;
     uint public start_time;
     uint public announced_card;
 
