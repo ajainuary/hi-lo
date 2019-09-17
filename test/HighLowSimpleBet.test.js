@@ -3,7 +3,7 @@ const Helper = artifacts.require("Helper")
 let accounts, highlow, helper;
 let LOW = 0, HIGH = 1;
 let NONCE1 = 1234, NONCE2 = 5678;
-WAIT_TIME = 15;
+const WAIT_TIME = 15;
 
 finishRound = async () => {
     await web3.currentProvider.send({

@@ -12,7 +12,7 @@ contract HighLow {
     bool[MAX_CARDS] public burn;
     uint public curr_card_index;
     /// @dev Determines the duration of a single round
-    uint public constant WAIT_TIME = 0;
+    uint public constant WAIT_TIME = 10;
     uint public START_TIME;
     uint public announced_card;
 
@@ -70,15 +70,16 @@ contract HighLow {
     }
 
     /// @notice Reveal the bet to claim rewards
+    /// @dev NOTE: new_card() called before require to break deadlocks
     /// @param _choice Choice (0 for High, 1 for Low) commited earlier
     /// @param _nonce Same nonce used for commitment earlier
     function bet_reveal(uint8 _choice, uint256 _nonce) public {
-        require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
-        require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
-        require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
         if(now >= START_TIME + WAIT_TIME) {
             new_card();
         }
+        require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
+        require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
+        require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
         bytes32 test_hash = keccak256(abi.encodePacked(_choice, _nonce));
         uint bet_card = cards[players[msg.sender].idx] % SUITE_SIZE;
         uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)] % SUITE_SIZE;
