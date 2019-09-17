@@ -73,23 +73,23 @@ contract HighLow {
     /// @param _choice Choice (0 for High, 1 for Low) commited earlier
     /// @param _nonce Same nonce used for commitment earlier
     function bet_reveal(uint8 _choice, uint256 _nonce) public {
-        require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
+        // require(players[msg.sender].bet_amount > 0, "No pending commitments, game over");
         require(curr_card_index - players[msg.sender].idx > 0, "Too early, wait for the next announced card");
-        require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
-        if(block.number >= start_block + wait_blocks) {
-            new_card();
-        }
-        bytes32 test_hash = keccak256(abi.encodePacked(_choice, _nonce));
-        uint bet_card = cards[players[msg.sender].idx] % SUITE_SIZE;
-        uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)] % SUITE_SIZE;
-        if(test_hash == players[msg.sender].commitment) {
-            if (result_card == bet_card)
-                house.transfer(players[msg.sender].bet_amount);
-            else if (result_card < bet_card && _choice == 0)
-                msg.sender.transfer(2*players[msg.sender].bet_amount);
-            else if (result_card > bet_card && _choice == 1)
-                msg.sender.transfer(2*players[msg.sender].bet_amount);
-            players[msg.sender].bet_amount = 0;
-        }
+        // require(curr_card_index - players[msg.sender].idx < SHUFFLE_LIMIT, "Too late, bet forfeited");
+        // if(block.number >= start_block + wait_blocks) {
+        //     new_card();
+        // }
+        // bytes32 test_hash = keccak256(abi.encodePacked(_choice, _nonce));
+        // uint bet_card = cards[players[msg.sender].idx] % SUITE_SIZE;
+        // uint result_card = cards[addmod(players[msg.sender].idx, 1, SHUFFLE_LIMIT)] % SUITE_SIZE;
+        // if(test_hash == players[msg.sender].commitment) {
+        //     if (result_card == bet_card)
+        //         house.transfer(players[msg.sender].bet_amount);
+        //     else if (result_card < bet_card && _choice == 0)
+        //         msg.sender.transfer(2*players[msg.sender].bet_amount);
+        //     else if (result_card > bet_card && _choice == 1)
+        //         msg.sender.transfer(2*players[msg.sender].bet_amount);
+        //     players[msg.sender].bet_amount = 0;
+        // }
     }
 }
