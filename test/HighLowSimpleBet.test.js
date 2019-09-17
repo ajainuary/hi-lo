@@ -1,6 +1,8 @@
 const HighLow = artifacts.require("HighLow");
 const Helper = artifacts.require("Helper")
 let accounts, highlow, helper;
+let LOW = 0, HIGH = 1;
+let NONCE1 = 1234, NONCE2 = 5678;
 
 contract('Single Player Game', () => {
     beforeEach(async () => {
@@ -9,14 +11,14 @@ contract('Single Player Game', () => {
         helper = await Helper.deployed();
         // amt = await web3.eth.getBalance(accounts[0]);
         // Load money to HighLow
-        await highlow.deposit(web3.utils.toWei("40"), {
+        await highlow.deposit(web3.utils.toWei("10"), {
             from: accounts[0],
-            value: web3.utils.toWei("40")
+            value: web3.utils.toWei("10")
         });
     });
-    it('Honest Player bets Low', async () => {
+    it('Honest Player - Commits: Low, Reveals: Low, Nonce: Same', async () => {
         bet_card = await highlow.announced_card.call().then(x => x.toNumber());
-        commitment = await helper.generate_commitment.call(0, 1234);
+        commitment = await helper.generate_commitment.call(LOW, NONCE1);
         initial_amt = await web3.eth.getBalance(accounts[1]);
         await highlow.bet_commit(commitment, {
             from: accounts[1],
@@ -24,7 +26,7 @@ contract('Single Player Game', () => {
             gas: 6721975
         });
         result_card = await highlow.announced_card.call().then(x => x.toNumber());
-        await highlow.bet_reveal(0, 1234, {
+        await highlow.bet_reveal(LOW, NONCE1, {
             from: accounts[1],
             gas: 6721975
         });
@@ -32,5 +34,124 @@ contract('Single Player Game', () => {
         // console.log(final_amt, initial_amt, result_card, bet_card, result_card > bet_card);
         // console.log("verdict", (final_amt > initial_amt && result_card < bet_card), final_amt - initial_amt <= 0, final_amt - initial_amt, result_card >= bet_card);
         assert((final_amt > initial_amt && result_card < bet_card) || (final_amt - initial_amt <= 0 && result_card >= bet_card), "Incorrect Verdict");
+    });
+    it('Honest Player - Commits: High, Reveals: High, Nonce: Same', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(HIGH, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(HIGH, NONCE1, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert((final_amt > initial_amt && result_card > bet_card) || (final_amt - initial_amt <= 0 && result_card <= bet_card), "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: Low, Reveals: Low, Nonce: Different', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(LOW, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(LOW, NONCE2, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: High, Reveals: High, Nonce: Different', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(HIGH, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(HIGH, NONCE2, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: Low, Reveals: High, Nonce: Same', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(LOW, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(HIGH, NONCE1, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: Low, Reveals: High, Nonce: Different', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(LOW, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(HIGH, NONCE2, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: High, Reveals: Low, Nonce: Same', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(HIGH, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(LOW, NONCE1, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
+    });
+    it('Dishonest Player - Commits: High, Reveals: Low, Nonce: Different', async () => {
+        bet_card = await highlow.announced_card.call().then(x => x.toNumber());
+        commitment = await helper.generate_commitment.call(HIGH, NONCE1);
+        initial_amt = await web3.eth.getBalance(accounts[1]);
+        await highlow.bet_commit(commitment, {
+            from: accounts[1],
+            value: web3.utils.toWei("2"),
+            gas: 6721975
+        });
+        result_card = await highlow.announced_card.call().then(x => x.toNumber());
+        await highlow.bet_reveal(LOW, NONCE2, {
+            from: accounts[1],
+            gas: 6721975
+        });
+        final_amt = await web3.eth.getBalance(accounts[1]);
+        assert(final_amt - initial_amt <= 0, "Incorrect Verdict");
     });
 })
