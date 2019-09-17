@@ -34,23 +34,12 @@ contract HighLow {
         // This condition rejects any typos in transaction
     }
 
-    // function already_announced(uint rand) internal view returns(bool) {
-    //     for(uint i = 0; i < SHUFFLE_LIMIT; ++i) {
-    //         if(rand == cards[i]) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
     function new_card() internal {
         start_block = block.number;
         uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
         announced_card = rand % SUITE_SIZE;
         uint i = 0;
         while(burn[rand] || announced_card < 2 || announced_card > 10) {
-        // while(burn[rand]) {
-        // while(i < 100) {
             rand = uint256(keccak256(abi.encodePacked(rand*i))) % MAX_CARDS;
             announced_card = rand % SUITE_SIZE;
             i = i + 1;
