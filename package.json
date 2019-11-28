@@ -1,0 +1,26 @@
+{
+  "name": "hi-lo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --timeout 15000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@ssh.github.com:443/ajainuary/hi-lo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ganache-cli": "^6.7.0",
+    "mocha": "^6.2.0",
+    "truffle-assertions": "^0.9.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
+}
