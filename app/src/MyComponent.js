@@ -30,7 +30,7 @@ function Deck(props) {
       <GridList cellHeight={300} className={classes.gridList} cols={5}>
         {cards.map((idx, i) => (
           <GridListTile key={i} cols={1}>
-            <img src={CARDS[idx-1]} width={180} height={300} />
+            <img src={CARDS[cards[(i+1)%10]-1]} width={180} height={300} />
           </GridListTile>
         ))}
       </GridList>
@@ -43,7 +43,8 @@ class MyClass extends React.Component{
     super(props);
     console.log(props);
     this.state = {
-      deck: Array(10).fill(53)
+      deck: Array(10).fill(53),
+      play: true
     }
   }
 
@@ -81,18 +82,19 @@ class MyClass extends React.Component{
         for(let i = 0; i < 10; i++) {
           promises.push(new Promise((resolve, reject) => HighLow.methods.cards(i).call((error, result) => {
             if(!error) {
-              console.log('Result of',i,'card',result);
+              // console.log('Result of',i,'card',result);
               new_deck[i] = parseInt(result);
               resolve();
             }
           })));
         }
-        Promise.all(promises).then(() => {this.setState({deck: new_deck}); console.log(new_deck)});
+        Promise.all(promises).then(() => this.setState({deck: new_deck}));
       }
     });
   }
 
   commit = async x => {
+    
     const { HighLow, Helper } = this.props.drizzle.contracts;
     const { accounts } = this.props.drizzleState;
     const { web3 } = this.props.drizzle;
@@ -104,11 +106,32 @@ class MyClass extends React.Component{
         HighLow._jsonInterface,
         o => o.name === 'NewCard' && o.type === 'event',
       );
-    setTimeout(() => {
-          console.log('something');
-          HighLow.methods.bet_reveal(x,nonce).send({from:accounts[0]});
-    }, 45000);   
-    var commit = await HighLow.methods.bet_commit(commitment).send({from:accounts[0],value:web3.utils.toWei("1")});
+    var subscription;
+    var y = setTimeout(() => {
+        HighLow.methods.bet_reveal(x,nonce).send({from:accounts[0], gas: 6721975});
+        subscription.unsubscribe();
+        this.setState({play: true});
+  }, 55000);
+    subscription = web3.eth.subscribe('logs', {
+        address: HighLow.options.address,
+        topics: [eventJsonInterface3.signature]
+      }, (error, result, subscribe) => {
+        if (!error) {
+          const eventObj = web3.eth.abi.decodeLog(
+            eventJsonInterface3.inputs,
+            result.data,
+            result.topics.slice(1)
+          )
+          console.log(x, nonce, 'reveal');
+          HighLow.methods.bet_reveal(x,nonce).send({from:accounts[0], gas: 6721975});
+          clearTimeout(y);
+          subscribe.unsubscribe();
+          this.setState({play: true});
+        }
+      });
+    console.log(commitment, 'commit', typeof(commitment));
+    var commit = await HighLow.methods.bet_commit(commitment).send({from:accounts[0],value:web3.utils.toWei("1"), gas: 6721975});
+    this.setState({play: false});
   }
 
   render() {

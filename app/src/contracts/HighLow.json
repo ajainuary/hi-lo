@@ -12241,7 +12241,7 @@
     }
   },
   "schemaVersion": "3.0.14",
-  "updatedAt": "2019-11-28T17:49:44.237Z",
+  "updatedAt": "2019-11-29T10:24:46.875Z",
   "devdoc": {
     "methods": {
       "bet_commit(bytes32)": {
