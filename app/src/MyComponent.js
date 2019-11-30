@@ -1,9 +1,11 @@
 import React from "react";
-import logo from "./logo.png";
+import logo from "./logo.jpg";
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
+import TextField from '@material-ui/core/TextField';
 import CARDS from './Cards.js';
 
 const useStyles = makeStyles(theme => ({
@@ -27,10 +29,10 @@ function Deck(props) {
   const { cards } = props;
   return (
     <div className={classes.root}>
-      <GridList cellHeight={300} className={classes.gridList} cols={5}>
+      <GridList cellHeight={270} cellWidth={220} className={classes.gridList} cols={5}>
         {cards.map((idx, i) => (
           <GridListTile key={i} cols={1}>
-            <img src={CARDS[cards[(i+1)%10]-1]} width={180} height={300} />
+            <img src={CARDS[cards[(i+1)%10]-1]} width={200} height={250} />
           </GridListTile>
         ))}
       </GridList>
@@ -44,7 +46,8 @@ class MyClass extends React.Component{
     console.log(props);
     this.state = {
       deck: Array(10).fill(53),
-      play: true
+      play: true,
+      amount: 0
     }
   }
 
@@ -53,7 +56,6 @@ class MyClass extends React.Component{
     const { accounts } = this.props.drizzleState;
     const { positions } = this.state;
     const { web3 } = this.props.drizzle;
-
     var new_deck = Array(10);
         var promises = [];
         for(let i = 0; i < 10; i++) {
@@ -130,28 +132,44 @@ class MyClass extends React.Component{
         }
       });
     console.log(commitment, 'commit', typeof(commitment));
-    var commit = await HighLow.methods.bet_commit(commitment).send({from:accounts[0],value:web3.utils.toWei("1"), gas: 6721975});
+    var commit = await HighLow.methods.bet_commit(commitment).send({from:accounts[0],value:web3.utils.toWei(this.state.amount), gas: 6721975});
     this.setState({play: false});
   }
 
   render() {
     return (<div className="App">
       <div>
-        <img src={logo} alt="drizzle-logo" />
-        <h1>Drizzle Examples</h1>
-        <p>Examples of how to get started with Drizzle in various situations.</p>
+        <img src={logo} alt="drizzle-logo" style={{
+          height: 300
+        }}/>
+        <h1 style={{
+          fontSize: 48
+        }}>HighLow</h1>
       </div>
-      <Deck cards={this.state.deck} />
-      <div id="draw-shapes" />
-      <div className="section">
-        <h2>Play</h2>
-        <Button variant="outlined" onClick={() => this.commit(1)}>
-          High
-        </Button>
-        <Button variant="outlined" onClick={() => this.commit(0)}>
-          Low
-        </Button>
-      </div>
+      <Container style={{
+                display: 'flex',
+                justifyContent: 'center',
+      }}>
+        <Container style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-around',
+          width: 200
+        }}>
+          <h2 style={{
+            fontSize: 28
+          }}>Play</h2>
+          Available Amount: {this.props.drizzle.web3.utils.fromWei(this.props.drizzleState.accountBalances[this.props.drizzleState.accounts[0]])}
+          <TextField id="standard-basic" label="Bet Amount" value={this.state.amount} onChange={(e) => this.setState({ amount: e.target.value })} type="number"/>
+          <Button variant="outlined" onClick={() => this.commit(1)}>
+            High
+          </Button>
+          <Button variant="outlined" onClick={() => this.commit(0)}>
+            Low
+          </Button>
+        </Container>  
+        <Deck cards={this.state.deck} />
+      </Container>
     </div>);
   }
 };
