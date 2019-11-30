@@ -25,15 +25,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"choice\",\"type\":\"uint8\"},{\"name\":\"nonce\",\"type\":\"uint256\"}],\"name\":\"generate_commitment\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/ajainuary/blockchain/A3/contracts/Helper.sol\":\"Helper\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/ajainuary/blockchain/A3/contracts/Helper.sol\":{\"keccak256\":\"0x19db4d7614f888a04bf118a4aeec85cfd4dfbf4f914eef071e62b58ebc6a8770\",\"urls\":[\"bzzr://6f453a9dc6f6ce7dbb969fc51ef2ab061704c863d38229d6933124a90dbdb8fb\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5060e78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80630b1f7e7714602d575b600080fd5b606360048036036040811015604157600080fd5b81019080803560ff169060200190929190803590602001909291905050506079565b6040518082815260200191505060405180910390f35b60008282604051602001808360ff1660ff1660f81b8152600101828152602001925050506040516020818303038152906040528051906020012090509291505056fea165627a7a723058201cf08950ac851fdbf268a0dfa87cb71523e7e95cb26a5d6925f1d6e6467c86f00029",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80630b1f7e7714602d575b600080fd5b606360048036036040811015604157600080fd5b81019080803560ff169060200190929190803590602001909291905050506079565b6040518082815260200191505060405180910390f35b60008282604051602001808360ff1660ff1660f81b8152600101828152602001925050506040516020818303038152906040528051906020012090509291505056fea165627a7a723058201cf08950ac851fdbf268a0dfa87cb71523e7e95cb26a5d6925f1d6e6467c86f00029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"choice\",\"type\":\"uint8\"},{\"name\":\"nonce\",\"type\":\"uint256\"}],\"name\":\"generate_commitment\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/ksvsc/IIITH/Monsoon19/Block Chain/Assignment3/hi-lo/contracts/Helper.sol\":\"Helper\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/ksvsc/IIITH/Monsoon19/Block Chain/Assignment3/hi-lo/contracts/Helper.sol\":{\"keccak256\":\"0x19db4d7614f888a04bf118a4aeec85cfd4dfbf4f914eef071e62b58ebc6a8770\",\"urls\":[\"bzzr://6f453a9dc6f6ce7dbb969fc51ef2ab061704c863d38229d6933124a90dbdb8fb\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060e78061001f6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80630b1f7e7714602d575b600080fd5b606360048036036040811015604157600080fd5b81019080803560ff169060200190929190803590602001909291905050506079565b6040518082815260200191505060405180910390f35b60008282604051602001808360ff1660ff1660f81b8152600101828152602001925050506040516020818303038152906040528051906020012090509291505056fea165627a7a72305820c1e7de8773004fa33b7ce92481f7926d85cef4a669ad88d64ac62a4d5ea0d36d0029",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c80630b1f7e7714602d575b600080fd5b606360048036036040811015604157600080fd5b81019080803560ff169060200190929190803590602001909291905050506079565b6040518082815260200191505060405180910390f35b60008282604051602001808360ff1660ff1660f81b8152600101828152602001925050506040516020818303038152906040528051906020012090509291505056fea165627a7a72305820c1e7de8773004fa33b7ce92481f7926d85cef4a669ad88d64ac62a4d5ea0d36d0029",
   "sourceMap": "25:178:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:178:0;;;;;;;",
   "deployedSourceMap": "25:178:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:178:0;;;;;;;;;;;;;;;;;;;47:154;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;47:154:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;126:7;179:6;187:5;162:31;;;;;;;;;;;;;;;;;;;;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;162:31:0;;;152:42;;;;;;145:49;;47:154;;;;:::o",
   "source": "pragma solidity ^0.5.8;\n\ncontract Helper {\n    function generate_commitment(uint8 choice, uint256 nonce) public pure returns (bytes32) {\n        return keccak256(abi.encodePacked(choice, nonce));\n    }\n}\n",
-  "sourcePath": "/home/ajainuary/blockchain/A3/contracts/Helper.sol",
+  "sourcePath": "/home/ksvsc/IIITH/Monsoon19/Block Chain/Assignment3/hi-lo/contracts/Helper.sol",
   "ast": {
-    "absolutePath": "/home/ajainuary/blockchain/A3/contracts/Helper.sol",
+    "absolutePath": "/home/ksvsc/IIITH/Monsoon19/Block Chain/Assignment3/hi-lo/contracts/Helper.sol",
     "exportedSymbols": {
       "Helper": [
         20
@@ -123,7 +123,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 493,
+                            "referencedDeclaration": 518,
                             "src": "162:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -170,7 +170,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 500,
+                      "referencedDeclaration": 525,
                       "src": "152:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -311,7 +311,7 @@
     "src": "0:204:0"
   },
   "legacyAST": {
-    "absolutePath": "/home/ajainuary/blockchain/A3/contracts/Helper.sol",
+    "absolutePath": "/home/ksvsc/IIITH/Monsoon19/Block Chain/Assignment3/hi-lo/contracts/Helper.sol",
     "exportedSymbols": {
       "Helper": [
         20
@@ -401,7 +401,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 493,
+                            "referencedDeclaration": 518,
                             "src": "162:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -448,7 +448,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 500,
+                      "referencedDeclaration": 525,
                       "src": "152:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -602,8 +602,8 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xDF0643C7c2404505C7669974A993Adc8c35EdC47",
-      "transactionHash": "0x0552eed38b7985d571b0d23b8077de52d092573f557d4ad614d0cff1e12cb96d"
+      "address": "0xaF88CEc34570ca6Bc9b1a6f7E610C06bD1aBdb3d",
+      "transactionHash": "0x07910221311f489fce234f2888353fdadb40540590aed96a274086f7f02cbff5"
     }
   },
   "schemaVersion": "3.0.14",
