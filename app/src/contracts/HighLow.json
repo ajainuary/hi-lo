@@ -12225,6 +12225,20 @@
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {
+    "4": {
+      "events": {
+        "0x0b65b5464589082b8122394ce0274824a2ccf9757c2d45456ba70ed923fc6dcb": {
+          "anonymous": false,
+          "inputs": [],
+          "name": "NewCard",
+          "type": "event",
+          "signature": "0x0b65b5464589082b8122394ce0274824a2ccf9757c2d45456ba70ed923fc6dcb"
+        }
+      },
+      "links": {},
+      "address": "0x88e6aFd4c0c562c2D229F7faFa50578cb6f8b331",
+      "transactionHash": "0x05ddc77cde85eee69c93444a9be500b4bc40b255fd3cd1df8dd6212b8bfc8ead"
+    },
     "5777": {
       "events": {
         "0x0b65b5464589082b8122394ce0274824a2ccf9757c2d45456ba70ed923fc6dcb": {
@@ -12241,7 +12255,7 @@
     }
   },
   "schemaVersion": "3.0.14",
-  "updatedAt": "2019-11-29T10:24:46.875Z",
+  "updatedAt": "2019-11-30T16:11:14.089Z",
   "devdoc": {
     "methods": {
       "bet_commit(bytes32)": {
