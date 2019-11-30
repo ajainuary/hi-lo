@@ -1,4 +1,5 @@
 import HighLow from "./contracts/HighLow.json";
+import Helper from "./contracts/Helper.json";
 
 const options = {
   web3: {
@@ -8,7 +9,7 @@ const options = {
       url: "ws://127.0.0.1:8545",
     },
   },
-  contracts: [HighLow],
+  contracts: [HighLow, Helper],
   events: {
   },
   polls: {

@@ -3,13 +3,13 @@ pragma solidity ^0.5.8;
 contract HighLow {
     address payable public house;
     /// @dev Maximum cards in the Burn Deck before mixing into deck
-    uint public constant SHUFFLE_LIMIT = 30;
+    uint public constant SHUFFLE_LIMIT = 10;
     /// @dev Size of our deck from which cards are drawn
-    uint public constant MAX_CARDS = 52;
+    uint public constant MAX_CARD = 52;
     /// @dev Length of maximum chain in cards
     uint public constant SUITE_SIZE = 13;
     uint[SHUFFLE_LIMIT] public cards;
-    bool[MAX_CARDS] public burn;
+    bool[MAX_CARD] public burn;
     uint public curr_card_index;
     /// @dev Determines the duration of a single round
     uint public constant WAIT_TIME = 30;
@@ -27,6 +27,9 @@ contract HighLow {
         new_card();
     }
 
+    /// @notice Event for announcing the new card
+    event NewCard();
+
     /// @notice Deposit ether into the contract
     /// @param _amount Value of ether being deposited (in wei)
     function deposit(uint _amount) public payable {
@@ -37,21 +40,25 @@ contract HighLow {
     function new_card() internal {
         uint i = 0;
         if(curr_card_index % SHUFFLE_LIMIT == 0) {
-            for(i = 0; i < MAX_CARDS; ++i) {
+            for(i = 0; i < MAX_CARD; ++i) {
                 burn[i] = false;
+            }
+            for(i = 0; i < SHUFFLE_LIMIT; ++i) {
+                cards[i] = MAX_CARD+1;
             }
         }
         start_time = now;
-        uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARDS;
+        uint rand = uint256(keccak256(abi.encodePacked(now))) % MAX_CARD;
         announced_card = rand % SUITE_SIZE;
         while(burn[rand] || announced_card < 2 || announced_card > 10) {
-            rand = uint256(keccak256(abi.encodePacked(rand*i))) % MAX_CARDS;
+            rand = uint256(keccak256(abi.encodePacked(rand*i))) % MAX_CARD;
             announced_card = rand % SUITE_SIZE;
             i = i + 1;
         }
         burn[rand] = true;
         curr_card_index = curr_card_index + 1;
         cards[curr_card_index % SHUFFLE_LIMIT] = rand;
+        emit NewCard();
     }
 
     mapping (address => Player) public players;
